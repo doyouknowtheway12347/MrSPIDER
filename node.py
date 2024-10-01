@@ -106,7 +106,7 @@ class Node:
         nickName = ""
         
         if rawNickName == 0:
-            return "0"
+            return "0" 
         
         while rawNickName > 0:
             digit = rawNickName % 26
