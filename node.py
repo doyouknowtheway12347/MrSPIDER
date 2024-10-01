@@ -25,7 +25,7 @@ class Node:
             self._isTwinNode = False
 
             # adding parent node attribute
-            self.parentNodeId = set(parentNodeId)
+            self.parentNodesIds = set(parentNodeId) if parentNodeId else set()
 
             # Generating id
             self.id = self._generateId()
@@ -71,7 +71,7 @@ class Node:
 
             if childNode._isTwinNode:
                 # if this node has already been created with the same url
-                
+                pass
 
 
             else:
@@ -93,9 +93,9 @@ class Node:
 
     def _generateId(self):
         # If current node has a parent [not none]
-        if self.parentNodeId[-1]:
+        if self.parentNodesIds:
             # determining position relative to other siblings
-            parentNode = Node.NODE_POOL[self.parentNodeId]
+            parentNode = Node.NODE_POOL[list(self.parentNodesIds)[-1]]
             noSiblings = len(parentNode.childrenNodes)
             rawNickName = noSiblings + 1 # NickName; How the parent Node refers to current Node
                                          # Raw Nickname; what number child we are, not converted to base 26
@@ -109,7 +109,7 @@ class Node:
         nickName = self.__rawNickNameToNickName(rawNickName)
         
         # adding the parents id to the front of current id
-        return f"{parentNode.id}:{nickName}" if self.parentNodeId else nickName
+        return f"{parentNode.id}:{nickName}" if self.parentNodesIds else nickName
     
     def __rawNickNameToNickName(self, rawNickName):
         digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -127,10 +127,10 @@ class Node:
 
     def _updateParentNodeChildren(self, id):
         # updates the parents nodes children node list
-        Node.NODE_POOL[self.parentNodeId].childrenNodes.add(id)
+        Node.NODE_POOL[list(self.parentNodesIds)[-1]].childrenNodes.add(id)
 
     def _updateTwinNodesParents(self, parentsId):
-        Node.NODE_POOL[parentsId].parentNodes.add(self._twinsId)
+        Node.NODE_POOL[parentsId].parentNodesIds.add(self._twinsId)
 
     def _doesAllReadyNodeExist(self):
         """return True if a node with the same url exists and also the other nodes Id [bool, Id]
@@ -154,5 +154,4 @@ child = Node("google.com/photos", parentNodeId=parent.id)
 
 child2 = Node("google.com/photos")
 
-print(parent.childrenNodes)
-print(Node.NODE_POOL)
+print(child.parentNodesIds)
