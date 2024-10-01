@@ -76,7 +76,11 @@ class Node:
                 # If node is not a twin
                     # add it to Nodes list
                 # If node is a twin
-                    # update this nodes twins 
+                    # update this nodes twins parent attribute
+                    # do not add it to returning node list
+                    # print out that there was a double up if SILENT = FALSE
+    
+        # return Nodes list
 
         
                 
