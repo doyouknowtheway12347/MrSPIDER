@@ -25,7 +25,7 @@ class Node:
             self._isTwinNode = False
 
             # adding parent node attribute
-            self.parentNodeId = parentNodeId
+            self.parentNodeId = set(parentNodeId)
 
             # Generating id
             self.id = self._generateId()
@@ -72,7 +72,7 @@ class Node:
             if childNode._isTwinNode:
                 # if this node has already been created with the same url
                 
-                
+
 
             else:
                 pass
@@ -93,7 +93,7 @@ class Node:
 
     def _generateId(self):
         # If current node has a parent [not none]
-        if self.parentNodeId:
+        if self.parentNodeId[-1]:
             # determining position relative to other siblings
             parentNode = Node.NODE_POOL[self.parentNodeId]
             noSiblings = len(parentNode.childrenNodes)
@@ -128,6 +128,9 @@ class Node:
     def _updateParentNodeChildren(self, id):
         # updates the parents nodes children node list
         Node.NODE_POOL[self.parentNodeId].childrenNodes.add(id)
+
+    def _updateTwinNodesParents(self, parentsId):
+        Node.NODE_POOL[parentsId].parentNodes.add(self._twinsId)
 
     def _doesAllReadyNodeExist(self):
         """return True if a node with the same url exists and also the other nodes Id [bool, Id]
