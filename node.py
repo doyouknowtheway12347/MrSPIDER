@@ -50,7 +50,7 @@ class Node:
         """Adds children to current node (and if this is a twin node add children to origonal node)
 
         Args:
-            children (set(dict("url":Url, "statusCode":Status code))): The children to add
+            children (set(tuple(Url, Status code), ...)): The children to add
         """
         
         # when adding children, only add parent nodes to Node(parentNodeId) as 
@@ -59,16 +59,19 @@ class Node:
         childrenNodes = []
 
         for childInfo in children:
-            childNode = Node(url=childInfo["url"], statusCode=childInfo["statusCode"])
+            childNode = Node(url=childInfo[0], statusCode=childInfo[1], parentNodeId=self.id)
 
 
             if childNode._isTwinNode:
                 # if this node has already been created with the same url
-                self._updateTwinNodesParents(self.id)
-                print(f"Updating {self._twinsId} with url {Node.NODE_POOL[self._twinsId]} parents to {self.id}") if Node.SILENT else None
+                childNode._updateTwinNodesParents(self.id)
+                print(f"Updating {childNode._twinsId} with url {Node.NODE_POOL[childNode._twinsId].url} parents to id {self.id}" + "\n") if not Node.SILENT else None
 
+                self.childrenNodes.add(childNode._twinsId)
             else:
                 childrenNodes.append(childNode)
+
+                self.childrenNodes.add(childNode.id)
 
         return childrenNodes
 
@@ -125,7 +128,7 @@ class Node:
         Node.NODE_POOL[list(self.parentNodesIds)[-1]].childrenNodes.add(id)
 
     def _updateTwinNodesParents(self, parentsId):
-        Node.NODE_POOL[parentsId].parentNodesIds.add(self._twinsId)
+        Node.NODE_POOL[self._twinsId].parentNodesIds.add(parentsId)
 
     def _doesAllReadyNodeExist(self):
         """return True if a node with the same url exists and also the other nodes Id [bool, Id]
@@ -143,10 +146,20 @@ class Node:
 
     
 
+## test adding children
+## test adding children but already exist
+
+
 parent = Node("google.com")
 
-child = Node("google.com/photos", parentNodeId=parent.id)
+otherNode = Node("google.com/photos")
 
-child2 = Node("google.com/photos")
 
-print(child.parentNodesIds)
+googleChildren = parent.addChildren({("google.com/photos", 200), ("google.com/photos", 200)})
+
+
+print(otherNode.parentNodesIds)
+
+# print(googleChildren[0].parentNodesIds)
+
+
