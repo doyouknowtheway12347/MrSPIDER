@@ -50,32 +50,38 @@ class Node:
         """Adds children to current node (and if this is a twin node add children to origonal node)
 
         Args:
-            children (set(list(Url, Status code))): The children to add
+            children (set(dict("url":Url, "statusCode":Status code))): The children to add
         """
         
         # when adding children, only add parent nodes to Node(parentNodeId) as 
         # this will update the current node with all the correct children nodes
         
-        # Nodes list
+        childrenNodes = []
 
         if self._isTwinNode:
             # This is a twin node
-  
-            # set local id variable = self.twinsId
+            id = self.twinsId
 
-            pass
         else:
             # This is a origonal node
+            id = self.id    
 
-            # set local id variable = self.id
-            pass
-    
+        for childInfo in children:
+            childNode = Node(url=childInfo["url"], statusCode=childInfo["statusCode"])
 
-         # loop over all children in CHILDREN [from argument of current function]
-                # create Node instance 
-                # If node is not a twin
+            if childNode._isTwinNode:
+                # if this node has already been created with the same url
+                
+                
+
+            else:
+                pass
+
+         ##loop over all children in CHILDREN [from argument of current function]
+                ## create Node instance 
+                ## If node is not a twin
                     # add it to Nodes list
-                # If node is a twin
+                ## If node is a twin
                     # update this nodes twins parent attribute
                     # do not add it to returning node list
                     # print out that there was a double up if SILENT = FALSE
