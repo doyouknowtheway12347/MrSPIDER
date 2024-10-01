@@ -69,6 +69,7 @@ class Node:
         for childInfo in children:
             childNode = Node(url=childInfo["url"], statusCode=childInfo["statusCode"])
 
+
             if childNode._isTwinNode:
                 # if this node has already been created with the same url
                 pass
