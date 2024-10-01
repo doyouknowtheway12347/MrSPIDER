@@ -58,34 +58,28 @@ class Node:
         
         childrenNodes = []
 
-        if self._isTwinNode:
-            # This is a twin node
-            id = self.twinsId
-
-        else:
-            # This is a origonal node
-            id = self.id    
-
         for childInfo in children:
             childNode = Node(url=childInfo["url"], statusCode=childInfo["statusCode"])
 
 
             if childNode._isTwinNode:
                 # if this node has already been created with the same url
-                pass
-
+                self._updateTwinNodesParents(self.id)
+                print(f"Updating {self._twinsId} with url {Node.NODE_POOL[self._twinsId]} parents to {self.id}") if Node.SILENT else None
 
             else:
-                pass
+                childrenNodes.append(childNode)
+
+        return childrenNodes
 
          ##loop over all children in CHILDREN [from argument of current function]
                 ## create Node instance 
                 ## If node is not a twin
-                    # add it to Nodes list
+                    ## add it to Nodes list
                 ## If node is a twin
-                    # update this nodes twins parent attribute
-                    # do not add it to returning node list
-                    # print out that there was a double up if SILENT = FALSE
+                    ## update this nodes twins parent attribute
+                    ## do not add it to returning node list
+                    ## print out that there was a double up if SILENT = FALSE
     
         # return Nodes list
 
