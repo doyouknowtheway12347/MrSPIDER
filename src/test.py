@@ -3,8 +3,8 @@ import regex
 def okURL(url):
     if regex.match(r"^\/[^\/]", url):
         print("relative url")
-    elif regex.match(r"[^\/=\-\.\+\?_~]#|^#", url):
-        print("anchor url ")
+    elif regex.match(r"(?!\/)#", url) or regex.match(r"^#", url):
+        print("anchor url")
     elif regex.match(r"^\/\/", url):
         print("Protocol-relative URLs")
     elif regex.match(r"%[0-9A-Fa-f]{2}+", url):
