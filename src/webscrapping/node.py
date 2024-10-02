@@ -43,9 +43,7 @@ class Node:
             self.statusCode = statusCode
 
             self.childrenNodesIds = set()
-
-        
-        
+   
     def addChildren(self, children):
         """Adds children to current node (and if this is a twin node add children to origonal node)
 
@@ -83,7 +81,6 @@ class Node:
 
         return childrenNodes
                 
-
     def _generateId(self):
         # If current node has a parent [not none]
         if self.parentNodesIds:
@@ -105,6 +102,7 @@ class Node:
         return f"{parentNode.id}:{nickName}" if self.parentNodesIds else nickName
     
     def __rawNickNameToNickName(self, rawNickName):
+        # black magic!!!!!!!!!!!!!!!!!!!
         digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         nickName = ""
         
@@ -139,11 +137,6 @@ class Node:
         else:
             # This is a new node
             return [False, ""]
-
-    
-
-## test adding children
-## test adding children but already exist
 
 
 parent = Node("google.com")
