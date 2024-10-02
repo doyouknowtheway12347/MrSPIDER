@@ -1,8 +1,8 @@
 class Node:
     # ALL NODES; Use id to select a node
-    NODE_POOL = {}
+    _ALL_NODE_INSTANCES = {}
 
-    UrlToID = {}
+    _UrlToID = {}
 
     # Debugging, logging all import events
     SILENT = False
@@ -30,10 +30,10 @@ class Node:
             # Generating id
             self.id = self._generateId()
             print(f"ID: {self.id} has URL {self.url} "+"\n") if not Node.SILENT else None 
-            Node.NODE_POOL[self.id] = self    
+            Node._ALL_NODE_INSTANCES[self.id] = self    
             
             # ensuring no other node with same url exists
-            Node.UrlToID[self.url] = self.id
+            Node._UrlToID[self.url] = self.id
 
             # updates parent nodes childrenNodes list
             if parentNodeId:
@@ -68,7 +68,7 @@ class Node:
                 
                 # updates the parentNodesIds attribute of the twin to the current Node instance
                 childNode._updateTwinNodesParents(self.id)
-                print(f"Updating ID: {childNode._twinsId} with URL {Node.NODE_POOL[childNode._twinsId].url} parents with ID: {self.id}" + "\n") if not Node.SILENT else None
+                print(f"Updating ID: {childNode._twinsId} with URL {Node._ALL_NODE_INSTANCES[childNode._twinsId].url} parents with ID: {self.id}" + "\n") if not Node.SILENT else None
 
                 # updating childrenNodesIds of current instance with twin node 
                 self.childrenNodesIds.add(childNode._twinsId)
@@ -85,14 +85,14 @@ class Node:
         # If current node has a parent [not none]
         if self.parentNodesIds:
             # determining position relative to other siblings
-            parentNode = Node.NODE_POOL[list(self.parentNodesIds)[-1]]
+            parentNode = Node._ALL_NODE_INSTANCES[list(self.parentNodesIds)[-1]]
             noSiblings = len(parentNode.childrenNodesIds)
             rawNickName = noSiblings + 1 # NickName; How the parent Node refers to current Node
                                          # Raw Nickname; what number child we are, not converted to base 26
         # If this is the first node in the genealogy
         else:
             # determining position relative to other siblings
-            noSiblings = len(Node.NODE_POOL)
+            noSiblings = len(Node._ALL_NODE_INSTANCES)
             rawNickName = noSiblings + 1 
 
         # goes from a number in base 10 to a number in base 26 [only using letters]
@@ -118,20 +118,20 @@ class Node:
 
     def _updateParentNodeChildren(self, id):
         # updates the parents nodes children node list
-        Node.NODE_POOL[list(self.parentNodesIds)[-1]].childrenNodesIds.add(id)
+        Node._ALL_NODE_INSTANCES[list(self.parentNodesIds)[-1]].childrenNodesIds.add(id)
 
     def _updateTwinNodesParents(self, parentsId):
         # updates the parentNodesIds attribute of the twin node
-        Node.NODE_POOL[self._twinsId].parentNodesIds.add(parentsId)
+        Node._ALL_NODE_INSTANCES[self._twinsId].parentNodesIds.add(parentsId)
 
     def _doesAllReadyNodeExist(self):
         """return True if a node with the same url exists and also the other nodes Id [bool, Id]
             If no node exist return False, and no Id [bool, Id]
         """
 
-        if self.url in Node.UrlToID:
+        if self.url in Node._UrlToID:
             # Node already exists
-            idOtherNode = Node.UrlToID[self.url]
+            idOtherNode = Node._UrlToID[self.url]
             return [True, idOtherNode]
 
         else:
