@@ -15,7 +15,7 @@ class Node:
         if origonalNode[0]:
             # if a node already exists with the same url
             print(f"Node with URL {self.url} already exists") if not Node.SILENT else None
-            print(f"updating node with ID {origonalNode[1]}"+"\n") if not Node.SILENT else None
+            print(f"Using current instance as a pointer towards node with ID: {origonalNode[1]}"+"\n") if not Node.SILENT else None
             self._isTwinNode = True
             # id of node with the same url
             self._twinsId = origonalNode[1]
@@ -29,7 +29,7 @@ class Node:
 
             # Generating id
             self.id = self._generateId()
-            print(f"{self.url} ID is {self.id}"+"\n") if not Node.SILENT else None 
+            print(f"ID: {self.id} has URL {self.url} "+"\n") if not Node.SILENT else None 
             Node.NODE_POOL[self.id] = self    
             
             # ensuring no other node with same url exists
@@ -42,7 +42,7 @@ class Node:
             # what is the status code
             self.statusCode = statusCode
 
-            self.childrenNodes = set()
+            self.childrenNodesIds = set()
 
         
         
@@ -53,40 +53,35 @@ class Node:
             children (set(tuple(Url, Status code), ...)): The children to add
         """
         
-        # when adding children, only add parent nodes to Node(parentNodeId) as 
-        # this will update the current node with all the correct children nodes
-        
+        # list of all origonal children nodes
         childrenNodes = []
 
+        # looping over all children 
+        # eg of children
+            # children = {("youtube.com", 200), ("music.youtube.com", 200)} 
         for childInfo in children:
+            # creates Nodes class instance with attributes stated from childInfo variable
             childNode = Node(url=childInfo[0], statusCode=childInfo[1], parentNodeId=self.id)
 
 
             if childNode._isTwinNode:
                 # if this node has already been created with the same url
+                # ie creating a new link with the other twin node
+                
+                # updates the parentNodesIds attribute of the twin to the current Node instance
                 childNode._updateTwinNodesParents(self.id)
-                print(f"Updating {childNode._twinsId} with url {Node.NODE_POOL[childNode._twinsId].url} parents to id {self.id}" + "\n") if not Node.SILENT else None
+                print(f"Updating ID: {childNode._twinsId} with URL {Node.NODE_POOL[childNode._twinsId].url} parents with ID: {self.id}" + "\n") if not Node.SILENT else None
 
-                self.childrenNodes.add(childNode._twinsId)
+                # updating childrenNodesIds of current instance with twin node 
+                self.childrenNodesIds.add(childNode._twinsId)
             else:
+                # appending origonal node to returning list
                 childrenNodes.append(childNode)
 
-                self.childrenNodes.add(childNode.id)
+                # updating childrenNodesIds of current instance with twin node
+                self.childrenNodesIds.add(childNode.id)
 
         return childrenNodes
-
-         ##loop over all children in CHILDREN [from argument of current function]
-                ## create Node instance 
-                ## If node is not a twin
-                    ## add it to Nodes list
-                ## If node is a twin
-                    ## update this nodes twins parent attribute
-                    ## do not add it to returning node list
-                    ## print out that there was a double up if SILENT = FALSE
-    
-        # return Nodes list
-
-        
                 
 
     def _generateId(self):
@@ -94,7 +89,7 @@ class Node:
         if self.parentNodesIds:
             # determining position relative to other siblings
             parentNode = Node.NODE_POOL[list(self.parentNodesIds)[-1]]
-            noSiblings = len(parentNode.childrenNodes)
+            noSiblings = len(parentNode.childrenNodesIds)
             rawNickName = noSiblings + 1 # NickName; How the parent Node refers to current Node
                                          # Raw Nickname; what number child we are, not converted to base 26
         # If this is the first node in the genealogy
@@ -125,9 +120,10 @@ class Node:
 
     def _updateParentNodeChildren(self, id):
         # updates the parents nodes children node list
-        Node.NODE_POOL[list(self.parentNodesIds)[-1]].childrenNodes.add(id)
+        Node.NODE_POOL[list(self.parentNodesIds)[-1]].childrenNodesIds.add(id)
 
     def _updateTwinNodesParents(self, parentsId):
+        # updates the parentNodesIds attribute of the twin node
         Node.NODE_POOL[self._twinsId].parentNodesIds.add(parentsId)
 
     def _doesAllReadyNodeExist(self):
@@ -154,8 +150,7 @@ parent = Node("google.com")
 
 otherNode = Node("google.com/photos")
 
-
-googleChildren = parent.addChildren({("google.com/photos", 200), ("google.com/photos", 200)})
+googleChildren = parent.addChildren({("google.com/photos", 200),})
 
 
 print(otherNode.parentNodesIds)
