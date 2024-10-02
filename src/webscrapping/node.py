@@ -5,7 +5,7 @@ class Node:
     _UrlToID = {}
 
     # Debugging, logging all import events
-    SILENT = False
+    _SILENT = False
 
     def __init__(self, url, parentNodeId=None, statusCode=None) -> None:
         self.url = url
@@ -14,8 +14,8 @@ class Node:
 
         if origonalNode[0]:
             # if a node already exists with the same url
-            print(f"Node with URL {self.url} already exists") if not Node.SILENT else None
-            print(f"Using current instance as a pointer towards node with ID: {origonalNode[1]}"+"\n") if not Node.SILENT else None
+            print(f"Node with URL {self.url} already exists") if not Node._SILENT else None
+            print(f"Using current instance as a pointer towards node with ID: {origonalNode[1]}"+"\n") if not Node._SILENT else None
             self._isTwinNode = True
             # id of node with the same url
             self._twinsId = origonalNode[1]
@@ -29,7 +29,7 @@ class Node:
 
             # Generating id
             self.id = self._generateId()
-            print(f"ID: {self.id} has URL {self.url} "+"\n") if not Node.SILENT else None 
+            print(f"ID: {self.id} has URL {self.url} "+"\n") if not Node._SILENT else None 
             Node._ALL_NODE_INSTANCES[self.id] = self    
             
             # ensuring no other node with same url exists
@@ -68,7 +68,7 @@ class Node:
                 
                 # updates the parentNodesIds attribute of the twin to the current Node instance
                 childNode._updateTwinNodesParents(self.id)
-                print(f"Updating ID: {childNode._twinsId} with URL {Node._ALL_NODE_INSTANCES[childNode._twinsId].url} parents with ID: {self.id}" + "\n") if not Node.SILENT else None
+                print(f"Updating ID: {childNode._twinsId} with URL {Node._ALL_NODE_INSTANCES[childNode._twinsId].url} parents with ID: {self.id}" + "\n") if not Node._SILENT else None
 
                 # updating childrenNodesIds of current instance with twin node 
                 self.childrenNodesIds.add(childNode._twinsId)
@@ -139,15 +139,11 @@ class Node:
             return [False, ""]
 
 
-parent = Node("google.com")
+# eg
+# parent = Node("google.com")
+# otherNode = Node("google.com/photos")
+# googleChildren = parent.addChildren({("google.com/photos", 200),})
+# print(otherNode.parentNodesIds)
 
-otherNode = Node("google.com/photos")
-
-googleChildren = parent.addChildren({("google.com/photos", 200),})
-
-
-print(otherNode.parentNodesIds)
-
-# print(googleChildren[0].parentNodesIds)
 
 
