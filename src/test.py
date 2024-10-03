@@ -1,13 +1,16 @@
 import regex
 
 def okURL(url):
-    if regex.match(r"^\/[^\/]", url):
+    if regex.search(r"^\/[^\/].*$", url): # using search
         print("relative url")
-    elif regex.match(r"(?!\/)#", url) or regex.match(r"^#", url):
+
+    elif regex.search(r"^.*[^\/=]#.*$|^#.*$", url): # using search
         print("anchor url")
-    elif regex.match(r"^\/\/", url):
+
+    elif regex.search(r"^\/\/.*$", url): # using search
         print("Protocol-relative URLs")
-    elif regex.match(r"%[0-9A-Fa-f]{2}+", url):
+
+    elif regex.search(r"^.*(%[0-9A-Fa-f]{2}.*)+$", url):
         print("Encoded")
     else:
         print("happy")
@@ -24,7 +27,11 @@ for url in urls:
     okURL(url)
     print()
 
+# url = "#anchor-on-current-page"
 
+# test = regex.search(r"^.*[^\/=]#.*$|^#.*$", url)
+
+# print(test)
 
 
 # _ work with relative URLS
