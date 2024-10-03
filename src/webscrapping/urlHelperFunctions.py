@@ -9,7 +9,7 @@ class Url:
         self.unPassedUrl = unPassedUrl
         self.parentUrl = parentUrl
 
-        # self._checkUrl()
+        self._checkUrl()
     
     def _checkUrl(self, _recursionDepth=0):
         if _recursionDepth > Url._maxRecursionDepth:
@@ -29,12 +29,17 @@ class Url:
         elif regex.search(r"^.*(%[0-9A-Fa-f]{2}.*)+$", url):
             print("Encoded")
         else:
-            print("happy")
+            print("Good URL")
+            self.url = self.unPassedUrl
+            print(f"URL: {self.url} is acceptable") if not Url._SILENT else None
+            return
+        
+        self._checkUrl(_recursionDepth=_recursionDepth+1)
+
         
 
     
 url = Url("#path/to/page.html", "www.google.com")
-url._checkUrl(4)
     
     
     # turns url to a useful form

@@ -59,25 +59,29 @@ class Node:
             # children = {("youtube.com", 200), ("music.youtube.com", 200)} 
         for childInfo in children:
             # creates Nodes class instance with attributes stated from childInfo variable
-            childNode = Node(url=childInfo[0], statusCode=childInfo[1], parentNodeId=self.id)
+            
+            # making sure url is not ""/empty string due to the nature of websrapper.py and how it deals with
+            # non-standard urls
+            if childInfo[0]:
+                childNode = Node(url=childInfo[0], statusCode=childInfo[1], parentNodeId=self.id)
 
 
-            if childNode._isTwinNode:
-                # if this node has already been created with the same url
-                # ie creating a new link with the other twin node
-                
-                # updates the parentNodesIds attribute of the twin to the current Node instance
-                childNode._updateTwinNodesParents(self.id)
-                print(f"Updating ID: {childNode._twinsId} with URL {Node._ALL_NODE_INSTANCES[childNode._twinsId].url} parents with ID: {self.id}" + "\n") if not Node._SILENT else None
+                if childNode._isTwinNode:
+                    # if this node has already been created with the same url
+                    # ie creating a new link with the other twin node
+                    
+                    # updates the parentNodesIds attribute of the twin to the current Node instance
+                    childNode._updateTwinNodesParents(self.id)
+                    print(f"Updating ID: {childNode._twinsId} with URL {Node._ALL_NODE_INSTANCES[childNode._twinsId].url} parents with ID: {self.id}" + "\n") if not Node._SILENT else None
 
-                # updating childrenNodesIds of current instance with twin node 
-                self.childrenNodesIds.add(childNode._twinsId)
-            else:
-                # appending origonal node to returning list
-                childrenNodes.append(childNode)
+                    # updating childrenNodesIds of current instance with twin node 
+                    self.childrenNodesIds.add(childNode._twinsId)
+                else:
+                    # appending origonal node to returning list
+                    childrenNodes.append(childNode)
 
-                # updating childrenNodesIds of current instance with twin node
-                self.childrenNodesIds.add(childNode.id)
+                    # updating childrenNodesIds of current instance with twin node
+                    self.childrenNodesIds.add(childNode.id)
 
         return childrenNodes
                 
