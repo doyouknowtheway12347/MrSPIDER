@@ -2,14 +2,21 @@ import urllib.parse
 import regex
 
 class Url:
-    _maxRecursionDepth =1 
+    _maxRecursionDepth = 1
+    _SILENT = False
+
     def __init__(self, unPassedUrl, parentUrl) -> None:
         self.unPassedUrl = unPassedUrl
         self.parentUrl = parentUrl
 
-        self._checkUrl()
+        # self._checkUrl()
     
-    def _checkUrl(self, _recursionDepth=3):
+    def _checkUrl(self, _recursionDepth=0):
+        if _recursionDepth > Url._maxRecursionDepth:
+            self.url = ""  
+            print(f"Unknown error encountered with URL: {self.unPassedUrl}") if not Url._SILENT else None
+            return
+        
         if regex.search(r"^\/[^\/].*$", url): 
             print("relative url")
 
@@ -27,6 +34,7 @@ class Url:
 
     
 url = Url("#path/to/page.html", "www.google.com")
+url._checkUrl(4)
     
     
     # turns url to a useful form
