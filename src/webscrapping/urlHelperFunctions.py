@@ -10,13 +10,16 @@ class Url:
         self._checkUrl()
     
     def _checkUrl(self, _recursionDepth=3):
-        if regex.match(r"^\/[^\/]", self.unPassedUrl):
+        if regex.search(r"^\/[^\/].*$", url): 
             print("relative url")
-        elif regex.match(r"[^\/=\-\.\+\?_~]#|^#", self.unPassedUrl):
-            print("anchor url ")
-        elif regex.match(r"^\/\/", self.unPassedUrl):
+
+        elif regex.search(r"^.*[^\/=]#.*$|^#.*$", url): 
+            print("anchor url")
+
+        elif regex.search(r"^\/\/.*$", url): 
             print("Protocol-relative URLs")
-        elif regex.match(r"%[0-9A-Fa-f]{2}+", self.unPassedUrl):
+
+        elif regex.search(r"^.*(%[0-9A-Fa-f]{2}.*)+$", url):
             print("Encoded")
         else:
             print("happy")
